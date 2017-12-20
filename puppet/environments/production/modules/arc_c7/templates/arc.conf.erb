@@ -1,0 +1,189 @@
+# Liverpool arc.conf  for C7
+#
+[common]
+debug="1"
+x509_user_key="/etc/grid-security/hostkey.pem"
+x509_user_cert="/etc/grid-security/hostcert.pem"
+x509_cert_dir="/etc/grid-security/certificates"
+gridmap="/etc/grid-security/grid-mapfile"
+lrms="condor" 
+hostname="<%= @arc_server_c7 %>"
+
+[grid-manager]
+debug="1"
+wakeupperiod=30
+logsize=30000000 20
+enable_emies_interface="yes"
+arex_mount_point="https://<%= @arc_server_c7 %>:443/arex"
+user="root"
+controldir="/var/spool/arc/jobstatus"
+sessiondir="/var/spool/arc/grid" 
+runtimedir="/etc/arc/runtime"
+logfile="/var/log/arc/grid-manager.log"
+pidfile="/var/run/grid-manager.pid"
+joblog="/var/log/arc/gm-jobs.log"
+shared_filesystem="no" 
+authplugin="PREPARING timeout=60,onfailure=pass,onsuccess=pass /usr/local/bin/default_rte_plugin.py %S %C %I ENV/GLITE"
+authplugin="FINISHING timeout=60,onfailure=pass,onsuccess=pass /usr/local/bin/scaling_factors_plugin.py %S %C %I"
+# This copies the files containing useful output from completed jobs into a directory /var/spool/arc/debugging 
+#authplugin="FINISHED timeout=60,onfailure=pass,onsuccess=pass /usr/local/bin/debugging_rte_plugin.py %S %C %I"
+
+mail="root@hep.ph.liv.ac.uk"
+jobreport="APEL:http://mq.cro-ngi.hr:6162"
+jobreport_options="urbatch:1000,archiving:/var/urs/,topic:/queue/global.accounting.cpu.central,gocdb_name:UKI-NORTHGRID-LIV-HEP,use_ssl:true,Network:PROD,benchmark_type:Si2k,benchmark_value:2500.00"
+jobreport_credentials="/etc/grid-security/hostkey.pem /etc/grid-security/hostcert.pem /etc/grid-security/certificates"
+jobreport_publisher="jura_dummy"
+# Disable (1 month !)
+#-# jobreport_period=2500000
+
+[gridftpd]
+debug="1"
+logsize=30000000 20
+user="root"
+logfile="/var/log/arc/gridftpd.log"
+pidfile="/var/run/gridftpd.pid"
+port="2811"
+allowunknown="yes"
+globus_tcp_port_range="20000,24999"
+globus_udp_port_range="20000,24999"
+maxconnections="500"
+
+#
+# Notes:
+#
+# The first two args are implicitly given to arc-lcmaps, and are
+#    argv[1] - the subject/DN
+#    argv[2] - the proxy file
+#
+# The remain attributes are explicit, after the "lcmaps" field in the examples below.
+#    argv[3] - lcmaps_library
+#    argv[4] - lcmaps_dir
+#    argv[5] - lcmaps_db_file
+#    argv[6 etc.] - policynames
+#
+# lcmaps_dir and/or lcmaps_db_file may be '*', in which case they are
+# fully truncated (placeholders).
+#
+# Some logic is applied. If the lcmaps_library is not specified with a
+# full path, it is given the path of the lcmaps_dir. We have to assume that
+# the lcmaps_dir is a poor name for that field, as discussed in the following
+# examples.
+#
+# Examples:
+#   In this example, used at RAL, the liblcmaps.so is given no
+#   path, so it is assumes to exist in /usr/lib64 (note the poorly
+#   named field - the lcmaps_dir is populated by a library path.)
+#
+# Fieldnames:      lcmaps_lib   lcmaps_dir lcmaps_db_file            policy
+#unixmap="* lcmaps liblcmaps.so /usr/lib64 /usr/etc/lcmaps/lcmaps.db arc"
+#
+#   In the next example, used at Liverpool, lcmaps_lib is fully qualified. Thus
+#   the lcmaps_dir is not used (although is does set the LCMAPS_DIR env var).
+#   In this case, the lcmaps_dir really does contain the lcmaps dir location.
+#
+# Fieldnames:      lcmaps_lib              lcmaps_dir  lcmaps_db_file policy
+unixmap="* lcmaps  /usr/lib64/liblcmaps.so /etc/lcmaps lcmaps.db     arc"
+unixmap="arcfailnonexistentaccount:arcfailnonexistentaccount all"
+
+
+[gridftpd/jobs]
+debug="1"
+path="/jobs"
+plugin="jobplugin.so"
+allownew="yes" 
+
+[infosys]
+debug="1"
+user="root"
+overwrite_config="yes"
+port="2135"
+registrationlog="/var/log/arc/inforegistration.log"
+providerlog="/var/log/arc/infoprovider.log"
+provider_loglevel="1"
+infosys_glue12="enable"
+infosys_glue2_ldap="enable"
+
+[infosys/glue12]
+debug="1"
+resource_location="Liverpool, UK"
+resource_longitude="-2.964"
+resource_latitude="53.4035"
+glue_site_web="http://www.gridpp.ac.uk/northgrid/liverpool"
+glue_site_unique_id="UKI-NORTHGRID-LIV-HEP"
+# Must be integer
+cpu_scaling_reference_si00="2649"
+processor_other_description="Cores= 10.133,Benchmark=10.596-HEP-SPEC06"
+provide_glue_site_info="false"
+
+[infosys/admindomain]
+debug="1"
+name="UKI-NORTHGRID-LIV-HEP"
+
+# infosys view of the computing cluster (service)
+[cluster]
+debug="1"
+name="<%= @arc_server_c7 %>"
+localse="hepgrid11.ph.liv.ac.uk"
+cluster_alias="arc_server_c7 (UKI-NORTHGRID-LIV-HEP)"
+comment="UKI-NORTHGRID-LIV-HEP Main Grid Cluster"
+homogeneity="True"
+nodecpu="Intel(R) Xeon(R) CPU L5420 @ 2.50GHz"
+architecture="x86_64"
+nodeaccess="inbound"
+nodeaccess="outbound"
+opsys="CentOS : 7.4 : Core"
+nodememory="2000"
+
+authorizedvo="alice"
+authorizedvo="atlas"
+authorizedvo="biomed"
+authorizedvo="calice"
+authorizedvo="cernatschool.org"
+authorizedvo="cms"
+authorizedvo="dteam"
+authorizedvo="epic.vo.gridpp.ac.uk"
+authorizedvo="esr"
+authorizedvo="fusion"
+authorizedvo="geant4"
+authorizedvo="gridpp"
+authorizedvo="hyperk.org"
+authorizedvo="ilc"
+authorizedvo="lhcb"
+authorizedvo="lz"
+authorizedvo="lsst"
+authorizedvo="magic"
+authorizedvo="mice"
+authorizedvo="na62.vo.gridpp.ac.uk"
+authorizedvo="ops"
+authorizedvo="pheno"
+authorizedvo="planck"
+authorizedvo="snoplus.snolab.ca"
+authorizedvo="skatelescope.eu"
+authorizedvo="t2k.org"
+authorizedvo="vo.northgrid.ac.uk"
+authorizedvo="zeus"
+authorizedvo="dune"
+authorizedvo="vo.moedal.org"
+
+benchmark="SPECINT2000 2208"
+benchmark="SPECFP2000 2208"
+# Switch back when more links
+totalcpus=304
+
+[queue/grid]
+debug="1"
+name="grid"
+homogeneity="True"
+comment="Default queue"
+nodecpu="adotf"
+architecture="adotf"
+defaultmemory=3000
+#-# maxrunning=24
+#maxrunning=1600
+totalcpus=304
+#-# maxuserrun=24
+#-# maxqueuable=2000
+#-# MainMemorySize="16384"
+OSFamily="linux"
+
+

@@ -1,0 +1,145 @@
+# Liverpool local htcondor config
+# 19 Dec 2017
+
+##  What machine is your central manager?
+
+CONDOR_HOST = igrid6.ph.liv.ac.uk 
+
+## Pool's short description
+
+COLLECTOR_NAME = Condor at Xgrid6.ph.liv.ac.uk 
+
+##  When is this machine willing to start a job? 
+
+START = FALSE
+
+##  When to suspend a job?
+
+SUSPEND = FALSE
+
+##  When to nicely stop a job?
+
+PREEMPT = FALSE
+PREEMPTION_REQUIREMENTS = FALSE
+
+# No job has pref over any other
+#RANK = FALSE
+
+##  When to instantaneously kill a preempting job
+
+KILL = FALSE
+
+##  what daemons to run
+
+DAEMON_LIST = <%= condor_daemon_list %>
+
+## Way to stop jobs running
+#NEGOTIATOR_INTERVAL = 10000000
+
+#######################################
+# Andrew Lahiff's scaling
+
+MachineRalScaling = "$$([ifThenElse(isUndefined(RalScaling), 1.00, RalScaling)])"
+MachineRalNodeLabel = "$$([ifThenElse(isUndefined(RalNodeLabel), 1.00, RalNodeLabel)])"
+SUBMIT_EXPRS = $(SUBMIT_EXPRS) MachineRalScaling MachineRalNodeLabel
+ 
+#######################################
+# Security
+UID_DOMAIN = ph.liv.ac.uk
+
+# Defeat host based security
+HOSTALLOW_READ =
+HOSTALLOW_WRITE =
+HOSTALLOW_NEGOTIATOR =
+HOSTALLOW_ADMINISTRATOR =
+
+# No-one can talk  to anything, at first
+ALLOW_WRITE = 
+
+# Only root on this system can alter configuration macros on the fly.
+ALLOW_CONFIG = root@$(FULL_HOSTNAME)
+
+# All daemons give READ access to any authentic user from this domain from known machines.
+ALLOW_READ = *@$(UID_DOMAIN)/138.253.178.106, *@$(UID_DOMAIN)/192.168.178.106, *@$(UID_DOMAIN)/138.253.178.110, *@$(UID_DOMAIN)/192.168.178.110, *@$(UID_DOMAIN)/192.168.*
+
+# All daemons give ADMINISTRATOR access to any authentic user from this domain from known machines.
+ALLOW_ADMINISTRATOR = *@$(UID_DOMAIN)/138.253.178.106, *@$(UID_DOMAIN)/192.168.178.106, *@$(UID_DOMAIN)/138.253.178.110, *@$(UID_DOMAIN)/192.168.178.110 
+
+# All daemons give DAEMON access to any authenticated daemon in this domain (also condor tasks on this system, no idea why that!)
+ALLOW_DAEMON = condor_pool@$(UID_DOMAIN)/*, condor@$(UID_DOMAIN)/$(IP_ADDRESS)
+
+# All daemons give NEGOTIATOR access to condor_pool (i.e. authenticated daemons) in this domain from known machines
+ALLOW_NEGOTIATOR = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+
+# The NEGOTIATOR daemon gives WRITE access to condor_pool (i.e. authenticated daemons) coming in from this domain from known machines.
+NEGOTIATOR.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+
+# The shadow, which looks after jobs, also gives WRITE access to condor_pool (i.e. authenticated daemons) coming in from this domain from known machines.
+SHADOW.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+
+# The scheduler, which thinks about users and work, also gives WRITE access to condor_pool (i.e. authenticated daemons) coming in from this domain from known machines.
+SCHEDD.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+
+# The collector can expose itself to all sorts of things. What do I care?
+COLLECTOR.ALLOW_ADVERTISE_MASTER = *@$(UID_DOMAIN)/*
+COLLECTOR.ALLOW_ADVERTISE_SCHEDD = *@$(UID_DOMAIN)/*
+COLLECTOR.ALLOW_ADVERTISE_STARTD = *@$(UID_DOMAIN)/*
+
+# Don't allow nobody to run jobs
+SCHEDD.DENY_WRITE = nobody*
+
+#---------------------------------
+# Security negotiation
+#---------------------------------
+
+# Where the password lies, in case it gets used
+SEC_PASSWORD_FILE = /etc/condor/pool_password
+
+# Integrity - lots of that please
+SEC_DEFAULT_INTEGRITY  = REQUIRED
+
+# Generally, authentication is needed, password or filesystem
+SEC_DEFAULT_AUTHENTICATION = REQUIRED
+SEC_DEFAULT_AUTHENTICATION_METHODS = PASSWORD,FS
+
+# Authentication not necessary just to READ
+SEC_READ_AUTHENTICATION = OPTIONAL
+SEC_READ_AUTHENTICATION_METHODS = FS,PASSWORD
+
+# For the SCHEDD daemon WRITE and DAEMON, use unix permission first, then password
+SCHEDD.SEC_WRITE_AUTHENTICATION_METHODS = FS,PASSWORD
+SCHEDD.SEC_DAEMON_AUTHENTICATION_METHODS = FS,PASSWORD
+
+# Generally, authentication is needed for outgoing commands, filesystem or password
+SEC_CLIENT_AUTHENTICATION = REQUIRED
+SEC_CLIENT_AUTHENTICATION_METHODS = FS,PASSWORD
+
+#---------------------------------
+
+# Multicore
+ENABLE_RUNTIME_CONFIG = TRUE
+
+#NEGOTIATOR_DEBUG        = D_FULLDEBUG
+
+# Port limits
+HIGHPORT = 65000
+LOWPORT = 20000
+
+# History
+HISTORY = $(SPOOL)/history
+
+# Longer but better
+NEGOTIATE_ALL_JOBS_IN_CLUSTER = True
+
+## Allow some negotiator configuration to be settable
+NEGOTIATOR.PERSISTENT_CONFIG_DIR=/var/lib/condor/persistent_config_dir
+NEGOTIATOR.ENABLE_PERSISTENT_CONFIG = True
+NEGOTIATOR.SETTABLE_ATTRS_ADMINISTRATOR = NEGOTIATOR_CYCLE_DELAY
+
+# Try to kill hogs
+SYSTEM_PERIODIC_REMOVE = RemoteWallClockTime > 259200
+
+# Try again with ones that have some vars temporarily undef
+SYSTEM_PERIODIC_RELEASE = (JobRunCount < 10 && (time() - EnteredCurrentStatus) > 1200 ) && (HoldReasonCode == 5 && HoldReasonSubCode == 0)
+
+

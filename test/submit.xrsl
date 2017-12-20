@@ -1,0 +1,11 @@
+&
+(executable = "simple")
+(arguments = "input.txt")
+(jobName="TestJob")
+(inputFiles = ("input.txt" "") )
+(outputFiles = ("output.txt" "") )
+(stdout = "stdout")
+(stderr = "stderr")
+(gmlog="testjob.log")
+(walltime="240") 
+

@@ -24,8 +24,13 @@ class grid_users(
   # - FILES
 
   # 
-  file { "/root/scripts/makeNewUsers.pl": source  => 'puppet:///modules/grid_users/makeNewUsers.pl', mode => "700", require => File['/root/scripts'], }
-  file { "/root/scripts/users.conf": source  => 'puppet:///modules/grid_users/users.conf', mode => "600", require => File['/root/scripts'], }
+  exec {"grid_users/scriptsDir":
+    command => "/bin/mkdir /root/scripts/; chmod 755 /root/scripts/",
+    onlyif => "/usr/bin/test ! -d /root/scripts/",
+  }
+
+  file { "/root/scripts/makeNewUsers.pl": source  => 'puppet:///modules/grid_users/makeNewUsers.pl', mode => "700", before => Exec['grid_users/scriptsDir'], }
+  file { "/root/scripts/users.conf": source  => 'puppet:///modules/grid_users/users.conf', mode => "600", before => Exec['grid_users/scriptsDir'], }
 
   # CRONS
 

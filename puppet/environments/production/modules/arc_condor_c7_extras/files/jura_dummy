@@ -1,0 +1,8 @@
+#!/bin/bash
+
+x=`date`
+
+echo -n $x " " >> /var/log/arc/jura_dummy.log
+
+echo $@ >> /var/log/arc/jura_dummy.log
+

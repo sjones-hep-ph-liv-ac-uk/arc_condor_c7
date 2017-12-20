@@ -1,0 +1,7 @@
+#!/bin/bash
+
+service condor   restart
+service gridftpd restart
+service a-rex restart
+service nordugrid-arc-ldap-infosys restart
+

@@ -1,0 +1,139 @@
+CONDOR_HOST = <%= @central_manager %>
+
+COLLECTOR_NAME = Condor at <%= @central_manager %>
+
+EXECUTE = /data/condor_pool/
+
+# Master daemon runs, and starts the sub daemons
+START_DAEMONS = True
+DAEMON_LIST = MASTER, STARTD
+
+# Some vars can be saved.
+ENABLE_PERSISTENT_CONFIG = TRUE
+PERSISTENT_CONFIG_DIR = /etc/condor/ral
+STARTD_ATTRS = $(STARTD_ATTRS) StartJobs, RalNodeOnline, OnlyMulticore
+STARTD.SETTABLE_ATTRS_ADMINISTRATOR = StartJobs , OnlyMulticore
+
+# Default initial values
+StartJobs = False
+RalNodeOnline = False
+OnlyMulticore = False
+
+# Only start a job if ...
+START =  ((StartJobs == True) && (RalNodeOnline == True) && (ifThenElse(OnlyMulticore == True,ifThenElse(RequestCpus == 8, True, False) ,True ) ))
+
+SUSPEND = FALSE
+PREEMPT = FALSE
+PREEMPTION_REQUIREMENTS = FALSE
+KILL = FALSE
+
+# Any system can submit
+ALLOW_WRITE = */*
+
+# For scaling 
+STARTD_ATTRS = $(STARTD_ATTRS) RalScaling RalNodeLabel
+
+#######################################
+# Andrew Lahiff's tip for over committing memory
+
+#MEMORY = 1.35 * quantize( $(DETECTED_MEMORY), 1000 )
+MEMORY = 2.2 * quantize( $(DETECTED_MEMORY), 1000 )
+
+#######################################
+# Andrew Lahiff's security
+
+# Any machine can submit (for now, anyway)
+ALLOW_WRITE = */*
+
+# Machines that submit should end in this, else the job runs as nobody, which won't work well
+UID_DOMAIN = ph.liv.ac.uk
+
+COLLECTOR_HOST = <%= @central_manager %>
+
+# Central managers
+CMS = condor_pool@$(UID_DOMAIN)/<%= @central_manager %>
+
+# CEs
+CES = <%= @theCEs %>
+
+# Worker nodes
+WNS = condor_pool@$(UID_DOMAIN)/192.168.*
+
+# Users
+USERS = *@$(UID_DOMAIN)
+USERS = *
+
+# Required for HA
+HOSTALLOW_NEGOTIATOR = $(COLLECTOR_HOST)
+HOSTALLOW_ADMINISTRATOR = $(COLLECTOR_HOST)
+HOSTALLOW_NEGOTIATOR_SCHEDD = $(COLLECTOR_HOST)
+
+# Authorization
+HOSTALLOW_WRITE =
+ALLOW_READ = */*.ph.liv.ac.uk
+NEGOTIATOR.ALLOW_WRITE = $(CES), $(CMS)
+COLLECTOR.ALLOW_ADVERTISE_MASTER = $(CES), $(CMS), $(WNS)
+COLLECTOR.ALLOW_ADVERTISE_SCHEDD = $(CES)
+COLLECTOR.ALLOW_ADVERTISE_STARTD = $(WNS)
+SCHEDD.ALLOW_WRITE = $(USERS)
+SHADOW.ALLOW_WRITE = $(WNS), $(CES)
+ALLOW_DAEMON = condor_pool@$(UID_DOMAIN)/*.ph.liv.ac.uk, $(FULL_HOSTNAME)
+ALLOW_ADMINISTRATOR = root@$(UID_DOMAIN)/$(IP_ADDRESS), condor_pool@$(UID_DOMAIN)/$(IP_ADDRESS), $(CMS),$(CES)
+ALLOW_CONFIG = root@$(FULL_HOSTNAME)
+
+# Temp debug
+#ALLOW_WRITE = $(FULL_HOSTNAME), $(IP_ADDRESS), $(CONDOR_HOST)
+
+
+# Don't allow nobody to run jobs
+SCHEDD.DENY_WRITE = nobody@$(UID_DOMAIN)
+
+# Authentication
+SEC_PASSWORD_FILE = /etc/condor/pool_password
+SEC_DEFAULT_AUTHENTICATION = REQUIRED
+SEC_READ_AUTHENTICATION = OPTIONAL
+SEC_CLIENT_AUTHENTICATION = REQUIRED
+SEC_DEFAULT_AUTHENTICATION_METHODS = PASSWORD,FS
+SCHEDD.SEC_WRITE_AUTHENTICATION_METHODS = FS,PASSWORD
+SCHEDD.SEC_DAEMON_AUTHENTICATION_METHODS = FS,PASSWORD
+SEC_CLIENT_AUTHENTICATION_METHODS = FS,PASSWORD,CLAIMTOBE
+SEC_READ_AUTHENTICATION_METHODS = FS,PASSWORD,CLAIMTOBE
+
+# Integrity
+SEC_DEFAULT_INTEGRITY  = REQUIRED
+SEC_DAEMON_INTEGRITY = REQUIRED
+SEC_NEGOTIATOR_INTEGRITY = REQUIRED
+
+# Separation
+USE_PID_NAMESPACES = False
+
+# Smooth updates
+MASTER_NEW_BINARY_RESTART = PEACEFUL
+
+# Give jobs 3 days
+MAXJOBRETIREMENTTIME = 3600 * 24 * 3
+
+# Port limits
+HIGHPORT = 65000
+LOWPORT = 20000
+
+# Startd Crons
+STARTD_CRON_JOBLIST=TESTNODE
+STARTD_CRON_TESTNODE_EXECUTABLE=/usr/libexec/condor/scripts/testnodeWrapper.sh
+STARTD_CRON_TESTNODE_PERIOD=300s
+
+# Make sure values get over
+STARTD_CRON_AUTOPUBLISH = If_Changed
+
+# One job per claim
+CLAIM_WORKLIFE = 0
+
+# Enable CGROUP control
+BASE_CGROUP = htcondor
+# hard: job can't access more physical memory than allocated
+# soft: job can access more physical memory than allocated when there is free memory
+CGROUP_MEMORY_LIMIT_POLICY = soft
+
+# Use Machine-Job-Features
+USER_JOB_WRAPPER=/usr/sbin/mjf-job-wrapper
+

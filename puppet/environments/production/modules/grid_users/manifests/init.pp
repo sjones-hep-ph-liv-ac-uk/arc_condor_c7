@@ -29,8 +29,8 @@ class grid_users(
     onlyif => "/usr/bin/test ! -d /root/scripts/",
   }
 
-  file { "/root/scripts/makeNewUsers.pl": source  => 'puppet:///modules/grid_users/makeNewUsers.pl', mode => "700", before => Exec['grid_users/scriptsDir'], }
-  file { "/root/scripts/users.conf": source  => 'puppet:///modules/grid_users/users.conf', mode => "600", before => Exec['grid_users/scriptsDir'], }
+  file { "/root/scripts/makeNewUsers.pl": source  => 'puppet:///modules/grid_users/makeNewUsers.pl', mode => "700", require => Exec['grid_users/scriptsDir'], }
+  file { "/root/scripts/users.conf": source  => 'puppet:///modules/grid_users/users.conf', mode => "600", require => Exec['grid_users/scriptsDir'], }
 
   # CRONS
 
@@ -41,6 +41,7 @@ class grid_users(
   exec { "/root/scripts/makeNewUsers.pl":
     require => [File["/root/scripts/makeNewUsers.pl"],File["/root/scripts/users.conf"]],
     command => "/root/scripts/makeNewUsers.pl /root/scripts/users.conf > /root/scripts/done-makeNewUsers.pl",
+    timeout => "86400",
     onlyif => "/usr/bin/test ! -f /root/scripts/done-makeNewUsers.pl",
   }
 }

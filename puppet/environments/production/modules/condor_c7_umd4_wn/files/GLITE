@@ -1,0 +1,123 @@
+#!/bin/sh
+
+export GLOBUS_LOCATION=/usr
+
+if [ "x$1" = "x0" ]; then
+  # Set environment variable containing queue name
+  env_idx=0
+  env_var="joboption_env_$env_idx"
+  while [ -n "${!env_var}" ]; do
+     env_idx=$((env_idx+1))
+     env_var="joboption_env_$env_idx"
+  done 
+  eval joboption_env_$env_idx="NORDUGRID_ARC_QUEUE=$joboption_queue"
+	
+  export RUNTIME_ENABLE_MULTICORE_SCRATCH=1
+
+fi
+
+if [ "x$1" = "x1" ]; then
+  # Set grid environment
+  if [ -e /etc/profile.d/env.sh ]; then
+     source /etc/profile.d/env.sh
+  fi 
+  if [ -e /etc/profile.d/zz-env.sh ]; then
+     source /etc/profile.d/zz-env.sh
+  fi
+  export LD_LIBRARY_PATH=/opt/xrootd/lib
+
+  # Set basic environment variables
+  export GLOBUS_LOCATION=/usr
+  HOME=`pwd`
+  export HOME
+  USER=`whoami`
+  export USER
+  HOSTNAME=`hostname -f`
+  export HOSTNAME
+fi
+
+export DPM_HOST=hepgrid11.ph.liv.ac.uk
+export DPNS_HOST=hepgrid11.ph.liv.ac.uk
+export GLEXEC_LOCATION=/usr
+export RFIO_PORT_RANGE=20000,25000
+export SITE_GIIS_URL=hepgrid4.ph.liv.ac.uk
+export SITE_NAME=UKI-NORTHGRID-LIV-HEP
+export MYPROXY_SERVER=lcgrbp01.gridpp.rl.ac.uk
+
+
+export VO_ALICE_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_ALICE_SW_DIR=/opt/exp_soft_sl5/alice
+export VO_ATLAS_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_ATLAS_SW_DIR=/cvmfs/atlas.cern.ch/repo/sw
+export VO_BIOMED_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_BIOMED_SW_DIR=/opt/exp_soft_sl5/biomed
+export VO_CALICE_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_CALICE_SW_DIR=/opt/exp_soft_sl5/calice
+export VO_CAMONT_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_CAMONT_SW_DIR=/opt/exp_soft_sl5/camont
+export VO_CDF_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_CDF_SW_DIR=/opt/exp_soft_sl5/cdf
+export VO_CERNATSCHOOL_ORG_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_CERNATSCHOOL_ORG_SW_DIR=/opt/exp_soft_sl5/cernatschool
+export VO_CMS_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_CMS_SW_DIR=/opt/exp_soft_sl5/cms
+export VO_DTEAM_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_DTEAM_SW_DIR=/opt/exp_soft_sl5/dteam
+export VO_DZERO_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_DZERO_SW_DIR=/opt/exp_soft_sl5/dzero
+export VO_EPIC_VO_GRIDPP_AC_UK_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_EPIC_VO_GRIDPP_AC_UK_SW_DIR=/opt/exp_soft_sl5/epic
+export VO_ESR_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_ESR_SW_DIR=/opt/exp_soft_sl5/esr
+export VO_FUSION_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_FUSION_SW_DIR=/opt/exp_soft_sl5/fusion
+export VO_GEANT4_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_GEANT4_SW_DIR=/opt/exp_soft_sl5/geant4
+export VO_GRIDPP_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_GRIDPP_SW_DIR=/opt/exp_soft_sl5/gridpp
+export VO_HYPERK_ORG_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_HYPERK_ORG_SW_DIR=/cvmfs/hyperk.egi.eu
+export VO_ILC_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_ILC_SW_DIR=/cvmfs/ilc.desy.de
+export VO_LHCB_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_LHCB_SW_DIR=/cvmfs/lhcb.cern.ch
+export VO_LZ_DEFAULT_SE=gfe02.grid.hep.ph.ic.ac.uk
+export VO_LZ_SW_DIR=/cvmfs/lz.opensciencegrid.org
+export VO_LSST_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_LSST_SW_DIR=/opt/exp_soft_sl5/lsst
+export VO_MAGIC_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_MAGIC_SW_DIR=/opt/exp_soft_sl5/magic
+export VO_MICE_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_MICE_SW_DIR=/cvmfs/mice.egi.eu
+export VO_NA62_VO_GRIDPP_AC_UK_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_NA62_VO_GRIDPP_AC_UK_SW_DIR=/cvmfs/na62.cern.ch
+export VO_NEISS_ORG_UK_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_NEISS_ORG_UK_SW_DIR=/opt/exp_soft_sl5/neiss
+export VO_OPS_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_OPS_SW_DIR=/opt/exp_soft_sl5/ops
+export VO_PHENO_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_PHENO_SW_DIR=/opt/exp_soft_sl5/pheno
+export VO_PLANCK_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_PLANCK_SW_DIR=/opt/exp_soft_sl5/planck
+export VO_SNOPLUS_SNOLAB_CA_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_SNOPLUS_SNOLAB_CA_SW_DIR=/cvmfs/snoplus.egi.eu
+export VO_T2K_ORG_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_T2K_ORG_SW_DIR=/cvmfs/t2k.egi.eu
+export VO_VO_NORTHGRID_AC_UK_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_VO_NORTHGRID_AC_UK_SW_DIR=/opt/exp_soft_sl5/northgrid
+export VO_ZEUS_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_ZEUS_SW_DIR=/opt/exp_soft_sl5/zeus
+export VO_DUNE_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_DUNE_SW_DIR=/cvmfs/dune.opensciencegrid.org
+export VO_VO_MOEDAL_ORG_DEFAULT_SE=hepgrid11.ph.liv.ac.uk
+export VO_VO_MOEDAL_ORG_SW_DIR=/cvmfs/moedal.cern.ch
+
+export RUCIO_HOME=/cvmfs/atlas.cern.ch/repo/sw/ddm/rucio-clients/0.1.12
+export RUCIO_AUTH_TYPE=x509_proxy 
+
+export LCG_GFAL_INFOSYS="lcg-bdii.gridpp.ac.uk:2170,topbdii.grid.hep.ph.ic.ac.uk:2170"
+
+# Fix to circumvent Condor Globus Libraries
+# (i.e. this error: lcg-cr: /usr/lib64/condor/libglobus_common.so.0: no version information available (required by /usr/lib64/libcgsi_plugin.so.1)
+export LD_LIBRARY_PATH=/usr/lib64/:$LD_LIBRARY_PATH
+

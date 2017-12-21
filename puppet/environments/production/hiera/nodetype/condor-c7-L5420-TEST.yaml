@@ -1,0 +1,43 @@
+---
+
+classes:
+ # Various classes related to os, site, network, monitoring etc.
+ # ...
+ # Here are the condor classes etc.
+ - grid_hosts
+ - grid_users
+ - cvmfs
+ - condor_c7_umd4_wn
+ - testnodes
+
+# Yaml params (node type defaults for condor)
+condor_c7_umd4_wn::params::ral_node_label: "L5420"
+condor_c7_umd4_wn::params::ral_scaling: "0.883"
+condor_c7_umd4_wn::params::num_slots: "1"
+condor_c7_umd4_wn::params::slot_type_1: "cpus=8,mem=auto,disk=auto"
+condor_c7_umd4_wn::params::num_slots_type_1: "1"
+condor_c7_umd4_wn::params::slot_type_1_partitionable: "TRUE"
+condor_c7_umd4_wn::params::processors: "8"
+condor_c7_umd4_wn::params::numberOfCpus: "2"
+condor_c7_umd4_wn::params::central_manager: "igrid5"
+
+yum_repositories:
+  local:
+    descr: "local RPMs"
+    baseurl: "http://map2.ph.liv.ac.uk/yum/local/rhel/7/x86_64"
+    enabled: "1"
+    protect: "1"
+    gpgcheck: "0"
+    priority: "1"
+  epel:
+    descr: "Extra Packages for Enterprise Linux 7 - $basearch"
+    baseurl: "http://map2.ph.liv.ac.uk/yum/ONLINE/pub/epel/7/$basearch"
+    enabled: "1"
+    gpgkey: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    gpgcheck: "1"
+    priority: "99"
+
+cvmfs::cvmfs_quota_limit: '20000'
+cvmfs::cvmfs_http_proxy: 'http://hepsquid1.ph.liv.ac.uk:3128|http://hepsquid2.ph.liv.ac.uk:3128'
+cvmfs::cvmfs_cache_base: '/var/lib/cvmfs'
+

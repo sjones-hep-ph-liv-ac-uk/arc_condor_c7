@@ -1,0 +1,11 @@
+---
+classes:
+ - 
+
+nodetype: "arc_condor_c7"
+
+# class parameters
+arc_c7::params::arc_server_c7: 'hepgrid6.ph.liv.ac.uk'
+
+condor_c7_svr::params::condor_daemon_list: 'COLLECTOR, MASTER, NEGOTIATOR, SCHEDD '
+

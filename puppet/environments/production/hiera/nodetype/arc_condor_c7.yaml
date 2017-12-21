@@ -1,0 +1,31 @@
+---
+
+classes:
+ # Various classes related to os, site, network, monitoring etc.
+ # ...
+ # Here are the condor classes etc.
+ - c7_repos
+ - grid_users
+ - grid_hosts
+ - liv_gridcerts
+ - arc_c7
+ - condor_c7_svr
+ - arc_c7_argus_cli
+ - arc_condor_c7_extras
+
+yum_repositories:
+  local:
+    descr: "local RPMs"
+    baseurl: "http://map2.ph.liv.ac.uk/yum/local/rhel/7/x86_64"
+    enabled: "1"
+    protect: "1"
+    gpgcheck: "0"
+    priority: "1"
+  epel:
+    descr: "Extra Packages for Enterprise Linux 7 - $basearch"
+    baseurl: "http://map2.ph.liv.ac.uk/yum/ONLINE/pub/epel/7/$basearch"
+    enabled: "1"
+    gpgkey: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    gpgcheck: "1"
+    priority: "99"
+

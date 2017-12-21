@@ -1,0 +1,10 @@
+---
+classes:
+ - 
+
+nodetype: "condor-c7-L5420-TEST"
+
+# class parameters
+condor_c7_umd4_wn::params::central_manager: "igrid6"
+condor_c7_umd4_wn::params::theCEs: "condor_pool@ph.liv.ac.uk/igrid6,condor_pool@ph.liv.ac.uk/igrid10"
+

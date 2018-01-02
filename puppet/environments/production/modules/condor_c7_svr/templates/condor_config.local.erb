@@ -3,11 +3,11 @@
 
 ##  What machine is your central manager?
 
-CONDOR_HOST = igrid6.ph.liv.ac.uk 
+CONDOR_HOST = <%= myCondorHost %>
 
 ## Pool's short description
 
-COLLECTOR_NAME = Condor at Xgrid6.ph.liv.ac.uk 
+COLLECTOR_NAME = <%= myCollectorName %>
 
 ##  When is this machine willing to start a job? 
 
@@ -31,7 +31,7 @@ KILL = FALSE
 
 ##  what daemons to run
 
-DAEMON_LIST = <%= condor_daemon_list %>
+DAEMON_LIST = <%= myCondorDaemonList %>
 
 ## Way to stop jobs running
 #NEGOTIATOR_INTERVAL = 10000000
@@ -45,7 +45,7 @@ SUBMIT_EXPRS = $(SUBMIT_EXPRS) MachineRalScaling MachineRalNodeLabel
  
 #######################################
 # Security
-UID_DOMAIN = ph.liv.ac.uk
+UID_DOMAIN = <%= myUidDomain %>
 
 # Defeat host based security
 HOSTALLOW_READ =
@@ -60,25 +60,25 @@ ALLOW_WRITE =
 ALLOW_CONFIG = root@$(FULL_HOSTNAME)
 
 # All daemons give READ access to any authentic user from this domain from known machines.
-ALLOW_READ = *@$(UID_DOMAIN)/138.253.178.106, *@$(UID_DOMAIN)/192.168.178.106, *@$(UID_DOMAIN)/138.253.178.110, *@$(UID_DOMAIN)/192.168.178.110, *@$(UID_DOMAIN)/192.168.*
+ALLOW_READ = *@$(UID_DOMAIN)/<%= myGrid6GlobalIp %>, *@$(UID_DOMAIN)/<%= myGrid6LocalIp %>, *@$(UID_DOMAIN)/<%= myGrid10GlobalIp %>, *@$(UID_DOMAIN)/<%= myGrid10LocalIp %>, *@$(UID_DOMAIN)/<%= myWorkerNodeRange %>
 
 # All daemons give ADMINISTRATOR access to any authentic user from this domain from known machines.
-ALLOW_ADMINISTRATOR = *@$(UID_DOMAIN)/138.253.178.106, *@$(UID_DOMAIN)/192.168.178.106, *@$(UID_DOMAIN)/138.253.178.110, *@$(UID_DOMAIN)/192.168.178.110 
+ALLOW_ADMINISTRATOR = *@$(UID_DOMAIN)/<%= myGrid6GlobalIp %>, *@$(UID_DOMAIN)/<%= myGrid6LocalIp %>, *@$(UID_DOMAIN)/<%= myGrid10GlobalIp %>, *@$(UID_DOMAIN)/<%= myGrid10LocalIp %> 
 
 # All daemons give DAEMON access to any authenticated daemon in this domain (also condor tasks on this system, no idea why that!)
 ALLOW_DAEMON = condor_pool@$(UID_DOMAIN)/*, condor@$(UID_DOMAIN)/$(IP_ADDRESS)
 
 # All daemons give NEGOTIATOR access to condor_pool (i.e. authenticated daemons) in this domain from known machines
-ALLOW_NEGOTIATOR = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+ALLOW_NEGOTIATOR = condor_pool@$(UID_DOMAIN)/<%= myGrid6GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid6LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myWorkerNodeRange %>
 
 # The NEGOTIATOR daemon gives WRITE access to condor_pool (i.e. authenticated daemons) coming in from this domain from known machines.
-NEGOTIATOR.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+NEGOTIATOR.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/<%= myGrid6GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid6LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myWorkerNodeRange %>
 
 # The shadow, which looks after jobs, also gives WRITE access to condor_pool (i.e. authenticated daemons) coming in from this domain from known machines.
-SHADOW.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+SHADOW.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/<%= myGrid6GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid6LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myWorkerNodeRange %>
 
 # The scheduler, which thinks about users and work, also gives WRITE access to condor_pool (i.e. authenticated daemons) coming in from this domain from known machines.
-SCHEDD.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/138.253.178.106, condor_pool@$(UID_DOMAIN)/192.168.178.106, condor_pool@$(UID_DOMAIN)/138.253.178.110, condor_pool@$(UID_DOMAIN)/192.168.178.110, condor_pool@$(UID_DOMAIN)/192.168.*
+SCHEDD.ALLOW_WRITE = condor_pool@$(UID_DOMAIN)/<%= myGrid6GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid6LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10GlobalIp %>, condor_pool@$(UID_DOMAIN)/<%= myGrid10LocalIp %>, condor_pool@$(UID_DOMAIN)/<%= myWorkerNodeRange %>
 
 # The collector can expose itself to all sorts of things. What do I care?
 COLLECTOR.ALLOW_ADVERTISE_MASTER = *@$(UID_DOMAIN)/*

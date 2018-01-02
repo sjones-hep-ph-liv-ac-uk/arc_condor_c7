@@ -118,37 +118,6 @@ class arc_condor_c7_extras(
   file { "/root/scripts/restart": source => "puppet:///modules/arc_condor_c7_extras/restart", owner => "root", mode => "755", }
   file { "/root/scripts/removeUglySisters.sh": source => "puppet:///modules/arc_condor_c7_extras/removeUglySisters.sh", owner => "root", mode => "755", }
 
-  # Some dirs and files that simulate software tags in ARC
-  file { "/etc/arc/runtime/HYDRA-CLIENT-3_1": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_1_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_1_1": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_2_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_3_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_3_1": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_4_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_5_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_6_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_7_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/GLITE-3_0_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/GLITE-3_1_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/R-GMA": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-snoplus.snolab.ca-cvmfs": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-t2k.org-ND280-v10r11p25": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-biomed-CVMFS": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-t2k.org-ND280-v10r11p29": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-t2k.org-ND280-v11r21": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-lhcb-pilot": ensure => present, content => "", }
-
-  # Some start up environment files, which may not be necessary TODO
-  file { '/etc/arc/runtime/ENV': ensure  => directory, mode    => '755', }
-  file { "/etc/arc/runtime/ENV/GLITE":
-    source => "puppet:///modules/arc_condor_c7_extras/GLITE",
-    require => File ["/etc/arc/runtime/ENV"],
-    mode => "755",
-  }
-  file { "/etc/arc/runtime/ENV/PROXY": ensure => present, content => "", }
-
   # Some BDII fixes; sooner the better it is gone.
   exec { "MendCpuTime":
     command => "/bin/sed -i -e 's/JobCpuLimit \= \$maxcputime/JobCpuLimit \= \$joboption_cputime/' /usr/share/arc/submit-condor-job",

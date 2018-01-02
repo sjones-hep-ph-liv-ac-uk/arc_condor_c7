@@ -42,12 +42,12 @@ class arc_c7() inherits arc_c7::params
     mode => "755",
   }
   file { "/var/urs": ensure => "directory", mode => "755", }
-  file { "/etc/arc": ensure => "directory", mode => "755", }
-  file { "/etc/arc/runtime":
-    ensure => "directory",
-    mode => "755",
-    require => File ["/etc/arc"],
-  }
+  #file { "/etc/a rc": ensure => "directory", mode => "755", }
+  #file { "/etc/a rc/ru ntime":
+  #  ensure => "directory",
+  #  mode => "755",
+  #  require => File ["/etc/arc"],
+  #}
 
   file { '/etc/arc.conf':
     require => Package['nordugrid-arc-compute-element'],
@@ -55,7 +55,6 @@ class arc_c7() inherits arc_c7::params
   }
 
   # SERVICES
-  #service { "usagelogger": require => Package["usageLogger"],ensure => running, enable => true, hasstatus => true, }
 
   # EXECS
   # 

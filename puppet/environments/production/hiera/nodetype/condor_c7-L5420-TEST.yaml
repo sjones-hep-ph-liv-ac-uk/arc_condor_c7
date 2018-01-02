@@ -1,16 +1,24 @@
 ---
 
 classes:
- # Various classes related to os, site, network, monitoring etc.
- # ...
- # Here are the condor classes etc.
- - grid_hosts
- - grid_users
+ - salt
+ - liv_yum
+ - liv_puppet
+ - sensu
+ - nagios_plugins
+ - ganglia::gmond
+ - firewalld::direct
+ - firewalld
+ - sssd
+ - liv_nfsclient
  - cvmfs
  - condor_c7_umd4_wn
+ - grid_users
+ - grid_hosts
  - testnodes
+ - liv_cves
+ - runtime
 
-# Yaml params (node type defaults for condor)
 condor_c7_umd4_wn::params::ral_node_label: "L5420"
 condor_c7_umd4_wn::params::ral_scaling: "0.883"
 condor_c7_umd4_wn::params::num_slots: "1"
@@ -36,8 +44,4 @@ yum_repositories:
     gpgkey: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
     gpgcheck: "1"
     priority: "99"
-
-cvmfs::cvmfs_quota_limit: '20000'
-cvmfs::cvmfs_http_proxy: 'http://hepsquid1.ph.liv.ac.uk:3128|http://hepsquid2.ph.liv.ac.uk:3128'
-cvmfs::cvmfs_cache_base: '/var/lib/cvmfs'
 

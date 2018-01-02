@@ -7,5 +7,14 @@ nodetype: "arc_condor_c7"
 # class parameters
 arc_c7::params::arc_server_c7: 'hepgrid10.ph.liv.ac.uk'
 
-condor_c7_svr::params::condor_daemon_list: 'MASTER, SCHEDD '
+condor_c7_svr::params::myCondorDaemonList: ' MASTER, SCHEDD '
+condor_c7_svr::params::myCondorHost: 'igrid6.ph.liv.ac.uk'
+condor_c7_svr::params::myCollectorName: 'Condor at Xgrid6.ph.liv.ac.uk'
+condor_c7_svr::params::myUidDomain: 'ph.liv.ac.uk'
+condor_c7_svr::params::myGrid6LocalIp: '192.168.178.106'
+condor_c7_svr::params::myGrid6GlobalIp: '138.253.178.106'
+condor_c7_svr::params::myGrid10LocalIp: '192.168.178.110'
+condor_c7_svr::params::myGrid10GlobalIp: '138.253.178.110'
+condor_c7_svr::params::myWorkerNodeRange: '192.168.*'
+
 

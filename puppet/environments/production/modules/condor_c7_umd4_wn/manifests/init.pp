@@ -155,38 +155,10 @@ class condor_c7_umd4_wn(
   file { "/scratch/": ensure => "directory" }
   file { "/home": ensure => "directory", mode => "1777" }
 
-  # ARC runtime files
-  file { '/etc/arc': ensure  => directory, mode    => '755', }
-  file { '/etc/arc/runtime': ensure  => directory, mode    => '755', }
-  file { '/etc/arc/runtime/ENV': ensure  => directory, mode    => '755', }
-  file { "/etc/arc/runtime/ENV/GLITE": source => "puppet:///modules/condor_c7_umd4_wn/GLITE", require => File ["/etc/arc/runtime/ENV"], mode => "755", }
-  file { "/etc/arc/runtime/ENV/PROXY": ensure => present, content => "", }
-  file { "/etc/arc/runtime/GLITE-3_0_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/GLITE-3_1_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/HYDRA-CLIENT-3_1": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_1_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_1_1": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_2_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_3_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_3_1": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_4_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_5_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_6_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2_7_0": ensure => present, content => "", }
-  file { "/etc/arc/runtime/LCG-2": ensure => present, content => "", }
-  file { "/etc/arc/runtime/R-GMA": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-biomed-CVMFS": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-lhcb-pilot": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-snoplus.snolab.ca-cvmfs": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-t2k.org-ND280-v10r11p25": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-t2k.org-ND280-v10r11p29": ensure => present, content => "", }
-  file { "/etc/arc/runtime/VO-t2k.org-ND280-v11r21": ensure => present, content => "", }
-
-
   ssh_authorized_key { "root@hepgrid2":
     ensure => "present",
     name => "root@hepgrid5.ph.liv.ac.uk",
-    key => "SSHKEYHERE",
+    key => "AAAAB3NzaC1yc2EAAAABIwAAAQEAxFnNo1makt7/1021aJNt3vsnileDtDQ0tVSr5388xn+NLu5edJ9l5ltdVmG9uD3NQEyIBiaY6aRpj5WgSWil11XEm10qxxDwJv8gioWkoRDlAfSlSu6mcnr5GZLvZVOk8+2PMYoX2260WerS1+jilrzoVI3IzPfowo9WS3YvknOUBFC2f1pwJvDfl8lsaNKguK0lsl+T6XYLwXwrvFUtVtW8F+I5V8mwfN4WpqCcIYMedAMzYmuXdWElTdOBJI5BQspz/Uo04+sFQikvUa4tz9TOdmarwvReuhfY5Ays4W1ymRNUkkPLLimRXsa5qiGMzgJg79AJnqeqBiXxVfpILw==",
     user => "root",
     type => "ssh-rsa",
   }

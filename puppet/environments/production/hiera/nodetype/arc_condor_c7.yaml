@@ -1,9 +1,16 @@
 ---
 
 classes:
- # Various classes related to os, site, network, monitoring etc.
- # ...
- # Here are the condor classes etc.
+ - salt
+ - liv_yum
+ - liv_puppet
+ - sensu
+ - nagios_plugins
+ - ganglia::gmond
+ - firewalld
+ - sssd
+ - c7_eth1
+ - liv_cves
  - c7_repos
  - grid_users
  - grid_hosts
@@ -12,6 +19,10 @@ classes:
  - condor_c7_svr
  - arc_c7_argus_cli
  - arc_condor_c7_extras
+ - runtime
+
+salt::custom_grains:
+  nodetype: arc_c7
 
 yum_repositories:
   local:
@@ -28,4 +39,152 @@ yum_repositories:
     gpgkey: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
     gpgcheck: "1"
     priority: "99"
+
+sensu_checks:
+  disk_root:
+    checkname: "%{::hostname}_disk_root"
+    interval: 300
+    command: "/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /"
+  ntp:
+    checkname: "%{::hostname}_ntp"
+    interval: 300
+    command: "/usr/lib64/nagios/plugins/check_ntp_time -H ntp0.liv.ac.uk -w 0.02 -c 1"
+  puppet:
+    checkname: "%{::hostname}_puppet"
+    interval: 300
+    command: "/etc/sensu/plugins/check_puppet -p puppet -s /var/log/puppet_run_summary.yaml"
+  total_procs:
+    checkname: "%{::hostname}_total_procs"
+    interval: 60
+    command: "/usr/lib64/nagios/plugins/check_procs -w 500 -c 600 -s RSZDT"
+  load:
+    checkname: "%{::hostname}_load"
+    interval: 60
+    command: "/usr/lib64/nagios/plugins/check_load -w 9,9,9 -c 15,15,15"
+  swap:
+    checkname: "%{::hostname}_swap"
+    interval: 300
+    command: "/usr/lib64/nagios/plugins/check_swap -w 50 -c 10"
+
+ganglia::gmond::cluster_name: "HEP Nodes"
+ganglia::gmond::udp_send_channel:
+  -
+    mcast_join: "239.253.48.6"
+    port: "8649"
+    ttl: "1"
+ganglia::gmond::udp_recv_channel:
+  -
+    mcast_join: "239.253.48.6"
+    port: "8649"
+    bind: "239.253.48.6"
+ganglia::gmond::tcp_accept_channel:
+  -
+    port: "8649" 
+
+sensu::install_repo: true
+sensu::purge:
+  config: true
+sensu::client: true
+sensu::server: false
+sensu::rabbitmq_host: 'icinga.ph.liv.ac.uk'
+sensu::rabbitmq_user: 'sensu'
+sensu::rabbitmq_password: 'senses working overtime sandwich'
+sensu::rabbitmq_vhost: '/sensu'
+sensu::rabbitmq_ssl: 'true'
+sensu::rabbitmq_ssl_private_key: 'puppet:///sensu_files/key.pem'
+sensu::rabbitmq_ssl_cert_chain: 'puppet:///sensu_files/cert.pem'
+sensu::rabbitmq_port: '5671'
+sensu::subscriptions:
+    - all
+    - linux
+    - Centos7
+sensu::plugins:
+    - 'puppet:///sensu_files/plugins/check-mem.sh'
+    - 'puppet:///sensu_files/plugins/check_puppet'
+
+ssh::params::generate_root_key: true
+ssh::params::ssh_config_file: 'ssh_config-centos7-desktop'
+ssh::params::sshd_config_file: 'sshd_config-centos7-desktop'
+ssh::params::shosts_file: 'shosts.equiv-centos7-desktop'
+ssh::params::known_hosts_file: 'ssh_known_hosts-centos7-desktop'
+ssh::params::ssh_copy_hostkey: 'true'
+ssh::params::ssh_hostkey_file: 'ssh_host_rsa_key-centos7-desktop'
+ssh::params::ssh_hostkeypub_file: 'ssh_host_rsa_key.pub-centos7-desktop'
+
+# SSH authorized keys
+ssh_authorized_keys:
+  root@mike.ph.liv.ac.uk:
+    ensure: 'present'
+    name: 'root@mike.ph.liv.ac.uk'
+    key: 'AAAAB3NzaC1yc2EAAAABIwAAAQEA2/fCC3G2RN6+NCen+Y8vsiOYLnIJ9g9ESXRAkDk9C6demzqJCBEbykh1Z7lUbwaGYTnjvDrtslqC0X4/W2PmY6qO/UTUnXkMCXjd3kuz/VrpjicgvO7ejyZnRXTk5OcJ1XYCty6PibMHwG1I7w05GOA7zAVkwRTX+4nCotLZG39P73w3Del+7JtqnNqQJczvAOj/fDaPfwXeUmV9a1vpf2Zcfz6Zo++O3itRoj0fOZLInCxRPBSGACLphZvIxExyQ6tSuAuHVWFwzjE/Ix+aUM9t3oD7nZlHtXVG5Z7Y9omvTy8t1WFUNdG7Wc3ypXnIlkr671fKV2GTV4mBbZuKyw=='
+    user: 'root'
+    type: 'ssh-rsa'
+  root@vo10.ph.liv.ac.uk:
+    ensure: 'present'
+    name: 'root@vo10.ph.liv.ac.uk'
+    key: 'AAAAB3NzaC1yc2EAAAABIwAAAQEAvQxqIjWQ+F+VPExD//Ix3YGG3aWEAdF8EYJzLLiQUUkAa2KKkhTQ7cAQIyNmEOswAM+v0Xb6WqHfJNBLH0sBqhKmb50bCdYFFTyJoDSCKYJwnWecxeer1Nmk17b0nK/uuoztJooSc/odhl5ziKol7ge7Foo5WMWyY6M5aZvvQrci7lNnnrGaLwfySykePBSuVzgXEIcS2VvhA/WayQnH/6JWpPgw7uS1/8uppjokt5EQLqimS9unwSdP7sZwmcbJe194j0WdmQnO1MQoI4ipARU/fEzVmJAv7zjLNyyYUOUriXBuY2MWsCEZ8+/QK5izp4TOaN4Ae5Ovcw9+kEADew=='
+    user: 'root'
+    type: 'ssh-rsa'
+  root@hepgrid8.ph.liv.ac.uk:
+    ensure: 'present'
+    name: 'root@hepgrid8.ph.liv.ac.uk'
+    key: 'AAAAB3NzaC1yc2EAAAABIwAAAIEAtU3SuGGXeBNcJgHGp0Pm780spyHBizuGxhdYCauJOdxICkIPCAkWnNFnT09N0zF7Wo1zENsGfoopzSIVZ1IsD/nDv+ZvvOgNlxQdiwnfLxO1n+EDyfIBqls0r/IevNXyhv8K23aLxSIfMcVQ8fsTLcy78zdSlz9RMCxmxHFp/Ec='
+    user: 'root'
+    type: 'ssh-rsa'
+
+firewalld_zones:
+  public:
+    services:
+     - "http"
+     - "https"
+    sources:
+    ports:
+      - port: "123"
+        protocol: "tcp"
+      - port: "25"
+        protocol: "tcp"
+      - port: "2119"
+        protocol: "tcp"
+      - port: "2135"
+        protocol: "tcp"
+      - port: "2811"
+        protocol: "tcp"
+      - port: "5001"
+        protocol: "tcp"
+      - port: "8443"
+        protocol: "tcp"
+      - port: "9614"
+        protocol: "tcp"
+      - port: "9618"
+        protocol: "tcp"
+      - port: "9000-9300"
+        protocol: "tcp"
+      - port: "20000-25000"
+        protocol: "tcp"
+  grid:
+    description: "HEP grid systems"
+    services:
+     - "ssh"
+     - "dhcpv6-client"
+    sources:
+     - "138.253.178.0/24"
+     - "138.253.48.0/24"
+     - "138.253.60.0/24"
+     - "192.168.178.0/24"
+     - "192.168.21.0/24"
+     - "192.168.22.0/24"
+     - "192.168.23.0/24"
+     - "192.168.24.0/24"
+     - "192.168.25.0/24"
+     - "192.168.26.0/24"
+     - "192.168.27.0/24"
+
+    ports:
+      - port: "1024-65535"
+        protocol: "tcp"
+      - port: "8649"
+        protocol: "udp"
+      - port: "1024-65535"
+        protocol: "udp"
+
 

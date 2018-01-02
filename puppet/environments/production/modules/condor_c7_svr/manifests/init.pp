@@ -60,7 +60,6 @@ class condor_c7_svr() inherits condor_c7_svr::params
 
   
   file { '/etc/condor/condor_config.local':
-    #ensure => absent,
     require => Package['condor'],
     content => template('condor_c7_svr/condor_config.local.erb'),
   }
@@ -71,7 +70,6 @@ class condor_c7_svr() inherits condor_c7_svr::params
 
 
   # SERVICES
-  #service { "usagelogger": require => Package["usageLogger"],ensure => running, enable => true, hasstatus => true, }
 
   # EXECS
   # 
@@ -86,7 +84,6 @@ class condor_c7_svr() inherits condor_c7_svr::params
   }
 
   # OTHERSTUFF
-  # Restart slapd due to mem leak
 
   cron { "condor_jobs_running":
     command => "/usr/bin/condor_q -constraint 'JobStatus==2' -autoformat x509UserProxyVOName | sort | uniq -c > /var/local/condor_jobs_running",

@@ -1,0 +1,42 @@
+{
+  "name": "CERNOps-cvmfs",
+  "version": "1.0.3",
+  "author": "CERNOps",
+  "summary": "Manages CVMFS clients and servers",
+  "license": "Apache-2.0",
+  "source": "https://github.com/cvmfs/puppet-cvmfs",
+  "project_page": "https://github.com/cvmfs/puppet-cvmfs",
+  "issues_url": "https://github.com/cvmfs/puppet-cvmfs/issues",
+  "dependencies": [
+    {"name":"puppetlabs/concat","version_requirement":">=1.0.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">=1.0.0"},
+    {"name":"puppetlabs/firewall","version_requirement":">=1.0.0"},
+    {"name":"erwbgy/limits","version_requirement":">=0.3.1"}
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    }
+  ]
+}

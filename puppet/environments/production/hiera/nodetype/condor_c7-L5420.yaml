@@ -1,0 +1,55 @@
+---
+
+classes:
+ - salt
+ - liv_yum
+ - liv_puppet
+ - sensu
+ - nagios_plugins
+ - ganglia::gmond
+ - firewalld::direct
+ - firewalld
+ - sssd
+ - liv_nfsclient
+ - cvmfs
+ - condor_wn_c7
+ - grid_users
+ - grid_hosts
+ - testnodes
+ - liv_cves
+ - arc_condor_runtime_c7
+
+salt::custom_grains:
+  nodetype: condor_c7-L5420
+
+condor_wn_c7::params::ral_node_label: "L5420"
+condor_wn_c7::params::ral_scaling: "0.883"
+condor_wn_c7::params::num_slots: "1"
+condor_wn_c7::params::slot_type_1: "cpus=8,mem=auto,disk=auto"
+condor_wn_c7::params::num_slots_type_1: "1"
+condor_wn_c7::params::slot_type_1_partitionable: "TRUE"
+condor_wn_c7::params::processors: "8"
+condor_wn_c7::params::numberOfCpus: "2"
+condor_wn_c7::params::central_manager: "igrid5"
+
+yum_repositories:
+  local:
+    descr: "local RPMs"
+    baseurl: "http://map2.ph.liv.ac.uk/yum/local/rhel/7/x86_64"
+    enabled: "1"
+    protect: "1"
+    gpgcheck: "0"
+    priority: "1"
+  epel:
+    descr: "Extra Packages for Enterprise Linux 7 - $basearch"
+    baseurl: "http://map2.ph.liv.ac.uk/yum/ONLINE/pub/epel/7/$basearch"
+    enabled: "1"
+    gpgkey: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    gpgcheck: "1"
+    priority: "99"
+
+
+cvmfs::cvmfs_quota_limit: '20000'
+cvmfs::cvmfs_http_proxy: 'http://hepsquid1.ph.liv.ac.uk:3128|http://hepsquid2.ph.liv.ac.uk:3128'
+cvmfs::cvmfs_cache_base: '/var/lib/cvmfs'
+

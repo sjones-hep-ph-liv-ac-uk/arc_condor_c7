@@ -5,15 +5,15 @@ classes:
 nodetype: "arc_condor_c7"
 
 # class parameters
-arc_c7::params::arc_server_c7: 'hepgrid6.ph.liv.ac.uk'
+arc_svr_c7::params::arc_server_c7: 'hepgrid6.ph.liv.ac.uk'
 
-condor_c7_svr::params::myCondorDaemonList: 'COLLECTOR, MASTER, NEGOTIATOR, SCHEDD '
-condor_c7_svr::params::myCondorHost: 'igrid6.ph.liv.ac.uk'
-condor_c7_svr::params::myCollectorName: 'Condor at Xgrid6.ph.liv.ac.uk'
-condor_c7_svr::params::myUidDomain: 'ph.liv.ac.uk'
-condor_c7_svr::params::myGrid6LocalIp: '192.168.178.106'
-condor_c7_svr::params::myGrid6GlobalIp: '138.253.178.106'
-condor_c7_svr::params::myGrid10LocalIp: '192.168.178.110'
-condor_c7_svr::params::myGrid10GlobalIp: '138.253.178.110'
-condor_c7_svr::params::myWorkerNodeRange: '192.168.*'
+condor_svr_c7::params::myCondorDaemonList: 'COLLECTOR, MASTER, NEGOTIATOR, SCHEDD '
+condor_svr_c7::params::myCondorHost: 'igrid6.ph.liv.ac.uk'
+condor_svr_c7::params::myCollectorName: 'Condor at Xgrid6.ph.liv.ac.uk'
+condor_svr_c7::params::myUidDomain: 'ph.liv.ac.uk'
+condor_svr_c7::params::myGrid6LocalIp: '192.168.178.106'
+condor_svr_c7::params::myGrid6GlobalIp: '138.253.178.106'
+condor_svr_c7::params::myGrid10LocalIp: '192.168.178.110'
+condor_svr_c7::params::myGrid10GlobalIp: '138.253.178.110'
+condor_svr_c7::params::myWorkerNodeRange: '192.168.*'
 
